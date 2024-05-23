@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.vehicle.dao.SessionKeyDao">
+
+    <resultMap type="com.example.model.entity.SessionKey" id="SessionKeyMap">
+        <result property="keyId" column="key_id" jdbcType="INTEGER"/>
+        <result property="value" column="value" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="vid" column="VID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="keyId" useGeneratedKeys="true">
+        insert into session_key(value, user_id, VID)
+        values (#{value}, #{userId}, #{vid})
+    </insert>
+
+    <select id="getMaxKeyIdRecord" resultMap="SessionKeyMap">
+        SELECT key_id, value, user_id, VID
+        FROM session_key
+        WHERE key_id = (SELECT MAX(key_id) FROM session_key)
+    </select>
+
+
+</mapper>
+

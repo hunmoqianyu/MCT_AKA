@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.user.dao.UserDao">
+
+    <resultMap type="com.example.model.entity.User" id="UserMap">
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="bio" column="bio" jdbcType="VARCHAR"/>
+        <result property="cardId" column="card_id" jdbcType="VARCHAR"/>
+        <result property="vid" column="VID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryByUsername" resultMap="UserMap">
+        select
+          username, password, bio, card_id, VID
+        from user
+        where username = #{username}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+          username, password, bio, card_id, VID
+        from user
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="bio != null and bio != ''">
+                and bio = #{bio}
+            </if>
+            <if test="cardId != null">
+                and card_id = #{cardId}
+            </if>
+            <if test="vid != null and vid != ''">
+                and VID = #{vid}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="bio != null and bio != ''">
+                and bio = #{bio}
+            </if>
+            <if test="cardId != null">
+                and card_id = #{cardId}
+            </if>
+            <if test="vid != null and vid != ''">
+                and VID = #{vid}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="" useGeneratedKeys="true">
+        insert into user(username, password, bio, card_id, VID)
+        values (#{username}, #{password}, #{bio}, #{cardId}, #{vid})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="" useGeneratedKeys="true">
+        insert into user(username, password, bio, card_id, VID)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.username}, #{entity.password}, #{entity.bio}, #{entity.cardId}, #{entity.vid})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="" useGeneratedKeys="true">
+        insert into user(username, password, bio, card_id, VID)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.password}, #{entity.bio}, #{entity.cardId}, #{entity.vid})
+        </foreach>
+        on duplicate key update
+        username = values(username),
+        password = values(password),
+        bio = values(bio),
+        card_id = values(card_id),
+        VID = values(VID)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="bio != null and bio != ''">
+                bio = #{bio},
+            </if>
+            <if test="cardId != null">
+                card_id = #{cardId},
+            </if>
+            <if test="vid != null and vid != ''">
+                VID = #{vid},
+            </if>
+        </set>
+        where  = #{}
+    </update>
+
+</mapper>
+

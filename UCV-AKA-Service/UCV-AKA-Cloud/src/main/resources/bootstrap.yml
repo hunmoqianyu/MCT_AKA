@@ -1,0 +1,12 @@
+server:
+  port: 51802
+spring:
+  application:
+    name: UCV-AKA-Cloud
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.250.254.24:8849
+      config:
+        server-addr: 10.250.254.24:8849
+        file-extension: yml

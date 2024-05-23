@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cloud.dao.UserCDao">
+
+    <resultMap type="com.example.model.entity.UserC" id="UserCMap">
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="r" column="r" jdbcType="VARCHAR"/>
+        <result property="priKeyS" column="pri_key_s" jdbcType="VARCHAR"/>
+        <result property="paraA" column="para_a" jdbcType="VARCHAR"/>
+        <result property="paraB" column="para_b" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserCMap">
+        select
+          user_id, r, pri_key_s, para_a, para_b
+        from user_c
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserCMap">
+        select
+          user_id, r, pri_key_s, para_a, para_b
+        from user_c
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="r != null and r != ''">
+                and r = #{r}
+            </if>
+            <if test="priKeyS != null and priKeyS != ''">
+                and pri_key_s = #{priKeyS}
+            </if>
+            <if test="paraA != null and paraA != ''">
+                and para_a = #{paraA}
+            </if>
+            <if test="paraB != null and paraB != ''">
+                and para_b = #{paraB}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user_c
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="r != null and r != ''">
+                and r = #{r}
+            </if>
+            <if test="priKeyS != null and priKeyS != ''">
+                and pri_key_s = #{priKeyS}
+            </if>
+            <if test="paraA != null and paraA != ''">
+                and para_a = #{paraA}
+            </if>
+            <if test="paraB != null and paraB != ''">
+                and para_b = #{paraB}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_c(user_id,r, pri_key_s, para_a, para_b)
+        values (#{userId},#{r}, #{priKeyS}, #{paraA}, #{paraB})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_c(r, pri_key_s, para_a, para_b)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.r}, #{entity.priKeyS}, #{entity.paraA}, #{entity.paraB})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_c(r, pri_key_s, para_a, para_b)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.r}, #{entity.priKeyS}, #{entity.paraA}, #{entity.paraB})
+        </foreach>
+        on duplicate key update
+        r = values(r),
+        pri_key_s = values(pri_key_s),
+        para_a = values(para_a),
+        para_b = values(para_b)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user_c
+        <set>
+            <if test="r != null and r != ''">
+                r = #{r},
+            </if>
+            <if test="priKeyS != null and priKeyS != ''">
+                pri_key_s = #{priKeyS},
+            </if>
+            <if test="paraA != null and paraA != ''">
+                para_a = #{paraA},
+            </if>
+            <if test="paraB != null and paraB != ''">
+                para_b = #{paraB},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+
+</mapper>
+

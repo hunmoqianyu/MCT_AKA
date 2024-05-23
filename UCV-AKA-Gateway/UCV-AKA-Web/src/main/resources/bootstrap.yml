@@ -1,0 +1,15 @@
+server:
+  port: 51601
+spring:
+  application:
+    name: UCV-AKA-Web-Gateway
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled:true
+    nacos:
+      discovery:
+        server-addr: 10.250.254.24:8849
+      config:
+        server-addr: 10.250.254.24:8849
+        file-extension: yml

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.vehicle.dao.VeCDao">
+
+    <resultMap type="com.example.model.entity.VeC" id="VeCMap">
+        <result property="vid" column="VID" jdbcType="VARCHAR"/>
+        <result property="vk" column="vk" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="VeCMap">
+        select
+          VID, vk
+        from ve_c
+        where VID = #{vid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="VeCMap">
+        select
+          VID, vk
+        from ve_c
+        <where>
+            <if test="vid != null and vid != ''">
+                and VID = #{vid}
+            </if>
+            <if test="vk != null and vk != ''">
+                and vk = #{vk}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from ve_c
+        <where>
+            <if test="vid != null and vid != ''">
+                and VID = #{vid}
+            </if>
+            <if test="vk != null and vk != ''">
+                and vk = #{vk}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" parameterType="com.example.model.entity.VeC" useGeneratedKeys="true" keyProperty="vid">
+        insert into ve_c(vid, vk)
+        values (#{vid}, #{vk})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="vid" useGeneratedKeys="true">
+        insert into ve_c(vk)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.vk})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="vid" useGeneratedKeys="true">
+        insert into ve_c(vk)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.vk})
+        </foreach>
+        on duplicate key update
+        vk = values(vk)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update ve_c
+        <set>
+            <if test="vk != null and vk != ''">
+                vk = #{vk},
+            </if>
+        </set>
+        where VID = #{vid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from ve_c where VID = #{vid}
+    </delete>
+
+</mapper>
+
